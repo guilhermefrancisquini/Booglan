@@ -31,19 +31,65 @@
  * primeira pessoa.
  * Assim, lendo o Texto A, é possível identificar 71 verbos no texto, dos quais 58 estão em primeira pessoa.
  * Já no Texto B, quantos são os verbos?
+ * E quantos verbos do Texto B estão em primeira pessoa?
  */
- $verbos = 0;
- $verbosPrimeiraPesso = 0;
+ $verbs = 0;
+ $verbsFirstPerson = 0;
  foreach(explode(' ', $textB) as $key => $word)
  {
     if( (strlen($word) >= 8) && (!in_array($word[(strlen($word)-1)], $foo)))
     {
         if(!in_array($word[0], $foo))
         {
-            $verbosPrimeiraPesso++;
+            $verbsFirstPerson++;
         }
-       $verbos++;
+       $verbs++;
     } 
 }
-echo "<b>Resposta:</b> Há $verbos verbos no Texto B.<br>";
-echo "<b>Resposta:</b> Há $verbosPrimeiraPesso verbos em primeira pessoa no Texto B.<br>";
+echo "<b>Resposta:</b> Há $verbs verbos no Texto B.<br>";
+echo "<b>Resposta:</b> Há $verbsFirstPerson verbos em primeira pessoa no Texto B.<br>";
+
+/*
+* Um professor universitário utilizará os textos A e B para ensinar o Booglan aos alunos. 
+* Para ajudar os alunos a compreender o texto, esse professor precisa criar uma lista de vocabulário para cada texto, 
+* isto é, uma lista ordenada (e sem repetições) das palavras que aparecem em cada um dos textos.
+
+* Essas listas devem estar ordenadas e não podem conter repetições de palavras. No Booglan, assim como no nosso alfabeto, 
+* as palavras são ordenadas lexicograficamente, mas o problema é que no Booglan, a ordem das letras no alfabeto é 
+* diferente da nossa. O alfabeto Booglan, em ordem, é: twhzkdfvcjxlrnqmgpsb. Assim, ao fazer essas listas, o professor 
+* deve respeitar a ordem alfabética Booglan.
+*/
+
+function orderBooglan($word1, $word2)
+{
+    $i = 0;
+    do{
+        if(!isset($word1[$i]))
+            return -1;
+        if(!isset($word2[$i]))
+            return 1;
+        $letra1 = $word1[$i];
+        $letra2 = $word2[$i];
+
+        $order = orderLetter($letra1, $letra2);
+        $i++;
+    } while ($order == 0);
+
+    return $order;
+}
+
+function orderLetter($letra1, $letra2)
+{
+    if($letra1 == $letra2)
+        return 0;
+
+    $alphabet='twhzkdfvcjxlrnqmgpsb';
+
+    $pos1 = strpos($alphabet, $letra1);
+    $pos2 = strpos($alphabet, $letra2);
+
+    return $pos1 < $pos2 ? -1 : 1;
+}
+$arrayTextB = array_unique(explode(' ', $textB));
+usort($arrayTextB, "orderBooglan");
+echo "<b>Como seria a lista de vocabulário do Texto B?</b><br>" . wordwrap(implode(' ', $arrayTextB));
