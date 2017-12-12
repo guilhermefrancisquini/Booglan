@@ -1,13 +1,13 @@
 <?php
 /**
- * Esses pergaminhos estão no antigo e misterioso idioma Booglan. Após muitos anos de estudo, 
+ * Esses pergaminhos estão no antigo e misterioso idioma Booglan. Após muitos anos de estudo,
  * os linguistas já conhecem algumas características desse idioma.
 
- * Primeiramente, as letras Booglan são classificadas em dois grupos: as letras r, t, c, d e b 
+ * Primeiramente, as letras Booglan são classificadas em dois grupos: as letras r, t, c, d e b
  * são chamadas "letras tipo foo", enquanto que as demais são conhecidas como "letras tipo bar".
 
- * Os linguistas descobriram que as preposições em Booglan são as palavras de 5 letras que terminam numa letra tipo bar, 
- * mas onde não ocorre a letra l. Portanto, é fácil ver que existem 49 preposições no Texto A. E no Texto B, quantas 
+ * Os linguistas descobriram que as preposições em Booglan são as palavras de 5 letras que terminam numa letra tipo bar,
+ * mas onde não ocorre a letra l. Portanto, é fácil ver que existem 49 preposições no Texto A. E no Texto B, quantas
  * preposições existem?
  */
 
@@ -21,13 +21,13 @@
     if( (strlen($word) === 5 ) && (false === strpos($word, 'l')) && (!in_array($word[4], $foo)))
     {
         $preposicoes++;
-    } 
+    }
  }
  echo "<b>Resposta:</b> Existem $preposicoes preposições no Texto B.<br>";
 
  /*
- * Um outro fato interessante descoberto pelos linguistas é que, no Booglan, os verbos sempre são palavras de 8 ou mais 
- * letras que terminam numa letra tipo bar. Além disso, se um verbo começa com uma letra tipo bar, o verbo está em 
+ * Um outro fato interessante descoberto pelos linguistas é que, no Booglan, os verbos sempre são palavras de 8 ou mais
+ * letras que terminam numa letra tipo bar. Além disso, se um verbo começa com uma letra tipo bar, o verbo está em
  * primeira pessoa.
  * Assim, lendo o Texto A, é possível identificar 71 verbos no texto, dos quais 58 estão em primeira pessoa.
  * Já no Texto B, quantos são os verbos?
@@ -44,19 +44,19 @@
             $verbsFirstPerson++;
         }
        $verbs++;
-    } 
+    }
 }
 echo "<b>Resposta:</b> Há $verbs verbos no Texto B.<br>";
 echo "<b>Resposta:</b> Há $verbsFirstPerson verbos em primeira pessoa no Texto B.<br>";
 
 /*
-* Um professor universitário utilizará os textos A e B para ensinar o Booglan aos alunos. 
-* Para ajudar os alunos a compreender o texto, esse professor precisa criar uma lista de vocabulário para cada texto, 
+* Um professor universitário utilizará os textos A e B para ensinar o Booglan aos alunos.
+* Para ajudar os alunos a compreender o texto, esse professor precisa criar uma lista de vocabulário para cada texto,
 * isto é, uma lista ordenada (e sem repetições) das palavras que aparecem em cada um dos textos.
 
-* Essas listas devem estar ordenadas e não podem conter repetições de palavras. No Booglan, assim como no nosso alfabeto, 
-* as palavras são ordenadas lexicograficamente, mas o problema é que no Booglan, a ordem das letras no alfabeto é 
-* diferente da nossa. O alfabeto Booglan, em ordem, é: twhzkdfvcjxlrnqmgpsb. Assim, ao fazer essas listas, o professor 
+* Essas listas devem estar ordenadas e não podem conter repetições de palavras. No Booglan, assim como no nosso alfabeto,
+* as palavras são ordenadas lexicograficamente, mas o problema é que no Booglan, a ordem das letras no alfabeto é
+* diferente da nossa. O alfabeto Booglan, em ordem, é: twhzkdfvcjxlrnqmgpsb. Assim, ao fazer essas listas, o professor
 * deve respeitar a ordem alfabética Booglan.
 */
 
@@ -93,3 +93,72 @@ function orderLetter($letra1, $letra2)
 $arrayTextB = array_unique(explode(' ', $textB));
 usort($arrayTextB, "orderBooglan");
 echo "<b>Como seria a lista de vocabulário do Texto B?</b><br>" . wordwrap(implode(' ', $arrayTextB));
+
+/*
+* Mas como os Booglans escrevem números? Bem, no Booglan, as palavras também são números dados em base 20, onde cada
+* letra é um dígito, e os dígitos são ordenados do menos significativo para o mais significativo (o inverso do nosso
+* sistema). Ou seja, a primeira posição é a unidade, a segunda posição vale 20, a terceira vale 400, e assim por diante.
+* Os valores das letras são dados pela ordem em que elas aparecem no alfabeto Booglan (que é diferente da nossa ordem,
+* como vimos acima). Ou seja, a primeira letra do alfabeto Booglan representa o dígito 0, a segunda representa o
+* dígito 1, e assim por diante.
+
+* Por exemplo, a palavra hnh tem o valor numérico de 1062.
+*
+* OBS: os números nesse problema podem ser grandes, então se você está usando um tipo de dados de tamanho limitado,
+* tenha cuidado com possíveis overflows.
+
+* Os Booglans consideram um número bonito se ele satizfaz essas duas propriedades:
+
+* é maior ou igual a 422224
+* é divisível por 3
+* Ao consideramos o Texto A como uma lista de números (isto é, interpretando cada palavra como um número usando a
+* convenção explicada acima), notamos que existem 140 números bonitos distintos.
+
+* E no Texto B, quantos números bonitos distintos existem?
+*/
+$alphabet='twhzkdfvcjxlrnqmgpsb';
+//$textA="rvtfn";
+$arrayTextB = array_unique(explode(' ', $textA));
+$prettyDistinctNumber=0;
+
+function fatoracao($fatora, $indice)
+{
+    $fatorado = 1;
+    for($i=1;$i<$indice;$i++)
+    {
+        $fatorado *= 20;
+    }
+    return ($fatorado * $fatora);
+}
+
+foreach($arrayTextB as $key => $word)
+{
+    $i=1;
+    $sumPrettyNumber=0;    
+    do
+    {
+        if($i == 1)
+        {
+            $sumPrettyNumber += strpos($alphabet, $word[$i-1]);
+        }
+        else
+        {
+            $pos = strpos($alphabet, $word[$i-1]);
+            $sumPrettyNumber += $fat = fatoracao($pos, $i);
+        }     
+        // echo  "<br> pos: $pos fat: $fat";
+        // echo  "<br> $sumPrettyNumber";
+        $i++;
+    }
+    while($i <= strlen($word));
+
+    if(($sumPrettyNumber >= 422224) && (($sumPrettyNumber % 3) === 0))
+    {
+        $prettyDistinctNumber++;
+    }
+    // echo  "<br> $word : $sumPrettyNumber";
+    // echo  "<br> $prettyDistinctNumber";
+
+}
+echo  "<br> <b>Resposta:</b> No Texto B, há $prettyDistinctNumber números bonitos distintos (atenção!).";
+//echo  "<br> $sumPrettyNumber";
