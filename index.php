@@ -23,7 +23,7 @@
         $preposicoes++;
     }
  }
- echo "<b>Resposta:</b> Existem $preposicoes preposições no Texto B.<br>";
+ echo "<b>Resposta:</b> Existem $preposicoes preposições no Texto B.<br><br>";
 
  /*
  * Um outro fato interessante descoberto pelos linguistas é que, no Booglan, os verbos sempre são palavras de 8 ou mais
@@ -46,7 +46,7 @@
        $verbs++;
     }
 }
-echo "<b>Resposta:</b> Há $verbs verbos no Texto B.<br>";
+echo "<b>Resposta:</b> Há $verbs verbos no Texto B.<br><br> ";
 echo "<b>Resposta:</b> Há $verbsFirstPerson verbos em primeira pessoa no Texto B.<br>";
 
 /*
@@ -92,7 +92,7 @@ function orderLetter($letra1, $letra2)
 }
 $arrayTextB = array_unique(explode(' ', $textB));
 usort($arrayTextB, "orderBooglan");
-echo "<b>Como seria a lista de vocabulário do Texto B?</b><br>" . wordwrap(implode(' ', $arrayTextB));
+echo "<br>  <b>Como seria a lista de vocabulário do Texto B?</b><br>" . wordwrap(implode(' ', $arrayTextB));
 
 /*
 * Mas como os Booglans escrevem números? Bem, no Booglan, as palavras também são números dados em base 20, onde cada
@@ -117,8 +117,7 @@ echo "<b>Como seria a lista de vocabulário do Texto B?</b><br>" . wordwrap(impl
 * E no Texto B, quantos números bonitos distintos existem?
 */
 $alphabet='twhzkdfvcjxlrnqmgpsb';
-//$textA="rvtfn";
-$arrayTextB = array_unique(explode(' ', $textA));
+$arrayTextB = explode(' ', $textB);
 $prettyDistinctNumber=0;
 
 function fatoracao($fatora, $indice)
@@ -126,9 +125,9 @@ function fatoracao($fatora, $indice)
     $fatorado = 1;
     for($i=1;$i<$indice;$i++)
     {
-        $fatorado *= 20;
+        $fatorado = bcmul($fatorado, '20');
     }
-    return ($fatorado * $fatora);
+    return bcmul($fatorado, $fatora);
 }
 
 foreach($arrayTextB as $key => $word)
@@ -137,28 +136,15 @@ foreach($arrayTextB as $key => $word)
     $sumPrettyNumber=0;    
     do
     {
-        if($i == 1)
-        {
-            $sumPrettyNumber += strpos($alphabet, $word[$i-1]);
-        }
-        else
-        {
-            $pos = strpos($alphabet, $word[$i-1]);
-            $sumPrettyNumber += $fat = fatoracao($pos, $i);
-        }     
-        // echo  "<br> pos: $pos fat: $fat";
-        // echo  "<br> $sumPrettyNumber";
+        $pos = strpos($alphabet, $word[$i-1]);
+        $sumPrettyNumber = bcadd($sumPrettyNumber, fatoracao($pos, $i)); 
         $i++;
     }
     while($i <= strlen($word));
 
-    if(($sumPrettyNumber >= 422224) && (($sumPrettyNumber % 3) === 0))
+    if(($sumPrettyNumber >= 422224) && ((bcmod($sumPrettyNumber, "3") == 0))) 
     {
         $prettyDistinctNumber++;
     }
-    // echo  "<br> $word : $sumPrettyNumber";
-    // echo  "<br> $prettyDistinctNumber";
-
 }
-echo  "<br> <b>Resposta:</b> No Texto B, há $prettyDistinctNumber números bonitos distintos (atenção!).";
-//echo  "<br> $sumPrettyNumber";
+echo  "<br><br>  <b>Resposta:</b> No Texto B, há $prettyDistinctNumber números bonitos distintos (atenção!).";
